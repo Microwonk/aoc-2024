@@ -1,12 +1,12 @@
-use iter_tools::Itertools;
+use std::collections::HashMap;
 
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
     let (mut left, mut right) = inp(input);
 
-    left = left.into_iter().sorted().collect();
-    right = right.into_iter().sorted().collect();
+    left.sort_unstable();
+    right.sort_unstable();
 
     let res = left
         .into_iter()
@@ -20,9 +20,21 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let (left, right) = inp(input);
 
+    // Slow Lookup
+    // let res = left
+    //     .into_iter()
+    //     .map(|n| n * right.iter().cloned().filter(|n2| *n2 == n).count() as u32)
+    //     .sum();
+
+    // Instead use Hashmap for fast lookup:
+    let right_counts: HashMap<u32, u32> = right.into_iter().fold(HashMap::new(), |mut acc, n| {
+        *acc.entry(n).or_insert(0) += 1;
+        acc
+    });
+
     let res = left
         .into_iter()
-        .map(|n| n * right.iter().cloned().filter(|n2| *n2 == n).count() as u32)
+        .map(|n| n * right_counts.get(&n).copied().unwrap_or(0))
         .sum();
 
     Some(res)
