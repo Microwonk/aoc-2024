@@ -42,7 +42,7 @@ pub fn part_two(input: &str) -> Option<u32> {
 
 fn inp(input: &str) -> (Vec<u32>, Vec<u32>) {
     input
-        .split('\n')
+        .lines()
         .map(|s| {
             s.split_once("   ").map_or((0, 0), |(c1, c2)| {
                 (
